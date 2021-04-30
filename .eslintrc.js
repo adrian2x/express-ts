@@ -16,6 +16,7 @@ module.exports = {
   },
   rules: {
     'import/extensions': 'off',
+    'prefer-const': 'off',
     'no-inner-declarations': 'off',
     'consistent-return': 'off',
     'no-shadow': 'off',

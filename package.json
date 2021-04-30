@@ -8,11 +8,14 @@
   },
   "scripts": {
     "start": "NODE_ENV=production ts-node -T ./src/index.ts",
-    "serve": "ts-node-dev --inspect --all-deps -T ./src/index.ts",
+    "bench": "ts-node -T ./src/index.ts > /dev/null",
+    "serve": "DEBUG=1 ts-node-dev --inspect --all-deps -T ./src/index.ts",
     "lint": "eslint --cache --ext .ts --ext .tsx --ext .js ./src",
     "prettier": "prettier --write \"src/**/*.(ts|tsx|js|jsx)\""
   },
   "dependencies": {
+    "apicache": "^1.6.2",
+    "cache-manager": "^3.4.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -27,8 +30,7 @@
     "pino": "^6.11.3",
     "pino-pretty": "^4.7.1",
     "ts-node": "^9.1.1",
-    "ts-node-dev": "^1.1.6",
-    "typescript": "^4.2.4"
+    "ts-node-dev": "^1.1.6"
   },
   "devDependencies": {
     "@types/compression": "^1.7.0",
@@ -40,11 +42,13 @@
     "@types/hpp": "^0.2.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "autocannon": "^7.2.0",
     "eslint": "^7.25.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.4"
   }
 }

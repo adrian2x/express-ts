@@ -4,11 +4,11 @@ import compress from 'compression'
 import helmet from 'helmet'
 import hpp from 'hpp'
 import cors from 'cors'
-import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
 import pino from 'express-pino-logger'
 
 export function middlewares(app: express.Application) {
+  let { NODE_ENV } = process.env
   // Set security headers
   app.use(helmet({}))
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }))
@@ -28,26 +28,22 @@ export function middlewares(app: express.Application) {
   // parse json request body
   app.use(express.json())
 
-  // parse urlencoded request body
-  app.use(express.urlencoded({ extended: true }))
-
   // security
   app.use(hpp())
-
-  // parse cookies
-  app.use(cookieParser())
 
   // enable cors
   app.use(cors())
   app.options('*', cors())
 
-  // rate limit requests
-  app.use(
-    rateLimit({
-      windowMs: 1 * 60 * 1000, // 1 minute
-      max: 2, // 2 qps per IP
-    })
-  )
+  if (NODE_ENV === 'production') {
+    // rate limit requests
+    app.use(
+      rateLimit({
+        windowMs: 2 * 60 * 1000, // 1 minute
+        max: 250, // 250 req/2min per IP
+      })
+    )
+  }
 
   // logger
   app.use(
@@ -63,7 +59,7 @@ export function middlewares(app: express.Application) {
   app.use(
     '/public',
     express.static(path.join(__dirname, '../../public'), {
-      maxAge: 31557600000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     })
   )
 }

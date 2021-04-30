@@ -5,29 +5,34 @@ import routes from './routes'
 import { middlewares } from './lib/middlewares'
 import { handleShutdown } from './lib/terminator'
 
+const { PORT, DEBUG } = process.env
+
 export async function start() {
-  const app = express()
+  let app = express()
 
   // Application settings
   app.set('trust proxy', true)
   app.set('x-powered-by', false)
 
+  // Setup middlewares
   middlewares(app)
+
+  // Route handlers
   routes(app)
 
-  // Start the app in cluster mode
-  if (cluster.isMaster) {
-    // Fork the app across all available CPUS
-    const CPUS = os.cpus()
-    CPUS.forEach(() => cluster.fork())
-  } else {
+  function listen(app) {
     // Start the server process
-    const { PORT } = process.env
-
-    const server = app.listen(PORT, () => {
+    let server = app.listen(Number(PORT), '0.0.0.0', () => {
       console.log('Server listening on port', PORT)
     })
-
     handleShutdown(app, server)
+  }
+
+  if (cluster.isMaster && !DEBUG) {
+    // Fork the app across available cpus
+    let CPUS = os.cpus()
+    CPUS.forEach(() => cluster.fork())
+  } else {
+    listen(app)
   }
 }

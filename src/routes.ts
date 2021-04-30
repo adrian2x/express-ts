@@ -1,5 +1,5 @@
 import { Application } from 'express'
-import hello from './pages/hello'
+import hello from './routes/hello'
 
 function healthChecks(app: Application) {
   // Check for liveliness
