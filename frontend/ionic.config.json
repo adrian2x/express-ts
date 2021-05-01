@@ -1,0 +1,13 @@
+{
+  "name": "frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react",
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://localhost:9000/api"
+    }
+  ]
+}
