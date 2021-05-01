@@ -45,7 +45,7 @@ export function middlewares(app: Express) {
   app.use(hpp())
 
   // enable cors
-  app.use(cors())
+  app.use(cors({ origin: '*' }))
   app.options('*', cors())
 
   if (!IS_DEV) {
