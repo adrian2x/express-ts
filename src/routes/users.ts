@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
-import { authRoute } from '../lib/firebase'
+import { withAuth } from '../lib/firebase'
 
 const prisma = new PrismaClient()
 const router = Router()
@@ -44,7 +44,7 @@ router.get('/users/:id', async (req, res) => {
 })
 
 /** Update user data */
-router.post('/users/:id', authRoute, async (req, res) => {
+router.post('/users/:id', withAuth, async (req, res) => {
   let { id } = req.params
   let { user } = req.body
 
@@ -62,7 +62,7 @@ router.post('/users/:id', authRoute, async (req, res) => {
 })
 
 /** Delete a user */
-router.delete('/users/:id', authRoute, async (req, res) => {
+router.delete('/users/:id', withAuth, async (req, res) => {
   let { id } = req.params
 
   if (id) {
