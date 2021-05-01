@@ -4,7 +4,7 @@
   "main": "./src/index.ts",
   "license": "GPL-3.0",
   "engines": {
-    "node": ">=14.16.0"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "start": "NODE_ENV=production ts-node -T ./src/index.ts",
@@ -27,6 +27,7 @@
     "express": "5.0.0-alpha.8",
     "express-pino-logger": "^6.0.0",
     "express-rate-limit": "^5.2.6",
+    "firebase-admin": "^9.7.0",
     "helmet": "^4.5.0",
     "hpp": "^0.2.3",
     "http-terminator": "^3.0.0",

@@ -7,12 +7,13 @@ import cors from 'cors'
 import hpp from 'hpp'
 import compress from 'compression'
 import rateLimit from 'express-rate-limit'
+import { firebaseAuth } from './firebase'
 
 const { NODE_ENV } = process.env
 const IS_PROD = NODE_ENV === 'production'
 const IS_DEV = NODE_ENV === 'development'
 
-function getCookie(req: Request, res: Response, next: any) {
+function getCookies(req: Request, res: Response, next: any) {
   if (req.headers.cookie) {
     req.cookies = cookie.parse(req.headers.cookie)
   }
@@ -77,5 +78,9 @@ export function middlewares(app: Express) {
     })
   )
 
-  app.use(getCookie)
+  // cookie parser
+  app.use(getCookies)
+
+  // auth by firebase
+  app.use(firebaseAuth)
 }
