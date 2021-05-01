@@ -22,7 +22,7 @@ function healthChecks(app: Application) {
 
 export default function init(app: Application) {
   healthChecks(app)
-  app.use(users)
-  app.use(posts)
+  app.use('/api/v1/', users)
+  app.use('/api/v1/', posts)
   // TODO: add your routes below...
 }

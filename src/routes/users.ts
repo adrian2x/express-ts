@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { authRoute } from '../lib/firebase'
 
 const prisma = new PrismaClient()
 const router = Router()
@@ -9,16 +10,22 @@ router.put('/users', async (req, res) => {
   let { user } = req.body
 
   if (user) {
-    let created = await prisma.user.create({
-      data: {
-        name: user.name,
-        providerId: user.uid,
-        role: 'user',
-        phoneNumber: user.phoneNumber,
-      },
-    })
+    try {
+      let created = await prisma.user.create({
+        data: {
+          name: user.displayName,
+          providerId: user.uid,
+          phoneNumber: user.phoneNumber,
+          email: user.email,
+          photoURL: user.photoURL,
+          role: 'user',
+        },
+      })
 
-    return res.send(created)
+      return res.send(created)
+    } catch (err) {
+      return res.status(500).send({ message: err.message })
+    }
   }
 
   return res.status(400).send({ ok: false, message: 'Missing user field' })
@@ -37,7 +44,7 @@ router.get('/users/:id', async (req, res) => {
 })
 
 /** Update user data */
-router.post('/users/:id', async (req, res) => {
+router.post('/users/:id', authRoute, async (req, res) => {
   let { id } = req.params
   let { user } = req.body
 
@@ -55,7 +62,7 @@ router.post('/users/:id', async (req, res) => {
 })
 
 /** Delete a user */
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', authRoute, async (req, res) => {
   let { id } = req.params
 
   if (id) {
