@@ -16,7 +16,7 @@
     "prettier": "prettier --write \"src/**/*.(ts|tsx|js|jsx)\""
   },
   "dependencies": {
-    "@prisma/client": "2.21.2",
+    "@prisma/client": "^2.21.2",
     "apicache": "^1.6.2",
     "cache-manager": "^3.4.3",
     "compression": "^1.7.4",
