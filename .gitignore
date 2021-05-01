@@ -114,7 +114,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+<<<<<<< HEAD
 
 # misc
 *.db
 *.db-journal
+=======
+*.db
+*.db-journal
+>>>>>>> prisma migrations
