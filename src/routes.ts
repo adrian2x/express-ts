@@ -1,6 +1,7 @@
 import { Application } from 'express'
 import users from './routes/users'
 import posts from './routes/posts'
+import www from './routes/index'
 
 function healthChecks(app: Application) {
   // Check for liveliness
@@ -22,6 +23,7 @@ function healthChecks(app: Application) {
 
 export default function init(app: Application) {
   healthChecks(app)
+  app.use(www)
   app.use('/api/v1/', users)
   app.use('/api/v1/', posts)
   // TODO: add your routes below...

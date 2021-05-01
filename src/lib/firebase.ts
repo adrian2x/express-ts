@@ -23,7 +23,7 @@ export async function firebaseAuth(req, res, next) {
   } else {
     req.auth = { uid: authToken }
   }
-  next()
+  return next()
 }
 
 /** Route validatior to enforce firebase verification */

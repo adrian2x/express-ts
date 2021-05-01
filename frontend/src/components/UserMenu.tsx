@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import { User } from '@firebase/auth-types'
 import { firebase } from './FirebaseAuth'
 
-export default function UserMenu({ user }: { user?: User }) {
+export default function UserMenu({ user }: { user?: User | null }) {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
     event: undefined,
@@ -50,6 +50,7 @@ export default function UserMenu({ user }: { user?: User }) {
         </IonPopover>
         <IonAvatar
           slot="end"
+          className="user-menu-avatar"
           onClick={(e: any) => {
             console.log(user)
             if (user) {

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@prisma/client": "^2.21.2",
+    "@types/ejs": "^3.0.6",
     "apicache": "^1.6.2",
     "cache-manager": "^3.4.3",
     "compression": "^1.7.4",
@@ -24,6 +25,7 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "ejs": "^3.1.6",
     "express": "5.0.0-alpha.8",
     "express-pino-logger": "^6.0.0",
     "express-rate-limit": "^5.2.6",

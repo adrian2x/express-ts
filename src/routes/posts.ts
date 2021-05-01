@@ -26,16 +26,63 @@ router.put('/posts', withAuth, async (req, res) => {
   return res.status(400).send({ ok: false, message: 'Missing post field' })
 })
 
+async function cursorPagination(req, getResults) {
+  let page = { size: 100 }
+  if (req.query.page) {
+    page = req.query.page
+  }
+
+  const { before, after, size } = page
+
+  let query = {
+    take: Number(size),
+    skip: after ? 1 : 0,
+    cursor: undefined,
+    orderBy: {
+      id: 'asc',
+    },
+  }
+  if (before || after) {
+    query.cursor = {
+      id: Number(after),
+    }
+  }
+  let data = await getResults(query)
+
+  let last = data[data.length - 1]
+  let nextCursor = last?.id
+  return {
+    links: {
+      next: `/api/v1/posts/?page[after]=${nextCursor}&page[size]=${size}`,
+      prev: `/api/v1/posts/?page[before]=${nextCursor}&page[size]=${size}`,
+    },
+    data: data,
+  }
+}
+
 /** Display post data */
-router.get('/posts/:id', withAuth, async (req, res) => {
-  let { id } = req.params
+router.get('/posts/:id?', async (req, res) => {
+  const { id } = req.params
   if (id) {
+    // Fetch post by id
     let post = await prisma.post.findUnique({
       where: { id: Number(id) },
+      include: {
+        author: true,
+      },
     })
-    return res.send(post)
+    res.send(post)
+  } else {
+    // Fetch all posts
+    let results = await cursorPagination(req, (query) => {
+      query.where = { published: true }
+      query.include = {
+        author: true,
+      }
+      return prisma.post.findMany(query)
+    })
+    res.send(results)
   }
-  return res.status(400).send({ ok: false, message: 'Invalid post id' })
 })
 
 /** Update post data */

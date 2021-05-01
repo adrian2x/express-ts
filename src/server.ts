@@ -1,6 +1,8 @@
 import * as os from 'os'
 import * as cluster from 'cluster'
+import path from 'path'
 import express from 'express'
+import ejs from 'ejs'
 import routes from './routes'
 import { middlewares } from './lib/middlewares'
 import { handleShutdown } from './lib/terminator'
@@ -13,6 +15,9 @@ export async function start() {
   // Application settings
   app.set('trust proxy', true)
   app.set('x-powered-by', false)
+  // app.set('view options', { layout: false })
+  // app.set('views', path.join(__dirname, '../public'))
+  // app.engine('html', ejs.renderFile)
 
   // Setup middlewares
   middlewares(app)

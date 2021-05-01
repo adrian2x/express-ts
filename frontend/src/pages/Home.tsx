@@ -14,28 +14,20 @@ import { User } from '@firebase/auth-types'
 import FirebaseAuth from '../components/FirebaseAuth'
 
 import './Home.css'
-import UserMenu from '../components/UserMenu'
+import Navbar from '../components/Navbar'
+import useFirebase from '../hooks/useFirebase'
 
 const Home: React.FC = () => {
-  const [user, setUser] = useState<User | undefined>(undefined)
-
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Ionic App</IonTitle>
-          <IonButtons slot="end">
-            <UserMenu user={user} />
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+      <Navbar />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Blank</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <FirebaseAuth signedInSuccess={(user: User) => setUser(user)} />
+        <FirebaseAuth />
       </IonContent>
     </IonPage>
   )

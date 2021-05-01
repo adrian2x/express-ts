@@ -28,9 +28,16 @@ export function middlewares(app: Express) {
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'unsafe-inline'"],
-        scriptSrc: ["'unsafe-inline'", "'self'"],
+        defaultSrc: ["'self'", '*.googleapis.com', '*.gstatic.com'],
+        styleSrc: ["'unsafe-inline'", "'self'", 'fonts.googleapis.com'],
+        scriptSrc: ["'unsafe-inline'", "'self'", 'fonts.googleapis.com'],
+        fontSrc: [
+          "'unsafe-inline'",
+          "'self'",
+          'fonts.googleapis.com',
+          '*.gstatic.com',
+        ],
+        imgSrc: ["'self'", 'data:', 'gravatar.com', '*.gstatic.com'],
       },
     })
   )
@@ -73,7 +80,7 @@ export function middlewares(app: Express) {
 
   // serve static files
   app.use(
-    '/public',
+    '/',
     express.static(path.join(__dirname, '../../public'), {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })

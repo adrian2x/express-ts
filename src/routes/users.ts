@@ -1,9 +1,15 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
+import crypto from 'crypto'
 import { withAuth } from '../lib/firebase'
 
 const prisma = new PrismaClient()
 const router = Router()
+
+function gravatarPhoto(email: string = '') {
+  let hash = crypto.createHash('md5').update(email).digest('hex')
+  return `https://www.gravatar.com/avatar/${hash}?d=mp`
+}
 
 /** Creates a new user */
 router.put('/users', async (req, res) => {
@@ -13,11 +19,11 @@ router.put('/users', async (req, res) => {
     try {
       let created = await prisma.user.create({
         data: {
-          name: user.displayName,
           providerId: user.uid,
-          phoneNumber: user.phoneNumber,
+          name: user.displayName,
           email: user.email,
-          photoURL: user.photoURL,
+          phoneNumber: user.phoneNumber,
+          photoURL: user.photoURL ?? gravatarPhoto(user.email),
           role: 'user',
         },
       })
