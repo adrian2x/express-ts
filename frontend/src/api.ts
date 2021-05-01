@@ -14,14 +14,6 @@ export function updateUser(user: User) {
   return superagent.post(`${BASE_URL}/users`).send({ user }).then()
 }
 
-export async function signOut(user: User) {
-  const token = await user.getIdToken()
-  return superagent
-    .post(`${BASE_URL}/signOut`)
-    .set({ authorization: `Bearer ${token}` })
-    .send({ user }).then()
-}
-
 export function getUser(id: number | string) {
   return superagent.get(`${BASE_URL}/users/${id}`).then()
 }

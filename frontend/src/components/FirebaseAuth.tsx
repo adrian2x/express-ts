@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import firebase from 'firebase'
+import { User } from '@firebase/auth-types'
 import { signIn } from '../api'
-import './FirebaseAuth.css'
+import './FirebaseAuth.scss'
 
-// Configure Firebase.
+// TODO: set your firebase config
 const config = {
   apiKey: 'AIzaSyDOTyoj9m1nnT9bkG30WXMPuzFjT39Yb9I',
   authDomain: 'test-e758d.firebaseapp.com',
@@ -13,6 +14,8 @@ const config = {
   messagingSenderId: '918779841724',
 }
 firebase.initializeApp(config)
+
+export { firebase }
 
 // Configure FirebaseUI.
 const uiConfig = {
@@ -44,7 +47,14 @@ const uiConfig = {
   ],
   callbacks: {
     // Avoid redirects after sign-in.
-    signInSuccessWithAuthResult: () => false,
+    signInSuccessWithAuthResult: (authResult: any) => {
+      const user = authResult.user
+      if (authResult.additionalUserInfo.isNewUser) {
+        // Create new user from user data
+        signIn(user!).catch((err) => console.error(err))
+      }
+      return false
+    },
   },
   // tosUrl and privacyPolicyUrl accept either url string or a callback
   // function.
@@ -56,8 +66,12 @@ const uiConfig = {
   },
 }
 
-export default function FirebaseAuth() {
-  const [user, setUser] = useState<firebase.User | null>(null)
+export interface FirebaseAuthProps {
+  signedInSuccess?: (user: User) => void
+}
+
+export default function FirebaseAuth({ signedInSuccess }: FirebaseAuthProps) {
+  const [user, setUser] = useState<User | undefined>(undefined)
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
@@ -65,8 +79,8 @@ export default function FirebaseAuth() {
       .auth()
       .onAuthStateChanged((user) => {
         if (user) {
-          signIn(user!).catch((err) => console.error(err))
           setUser(user)
+          if (signedInSuccess) signedInSuccess(user)
         }
       })
     // Make sure we un-register Firebase observers when the component unmounts.
@@ -76,7 +90,7 @@ export default function FirebaseAuth() {
   if (!user) {
     return (
       <div className="signup-form">
-        <h1>Please sign in to continue</h1>
+        <h1 className="signup-h1">Please sign in to continue</h1>
         <div>
           <StyledFirebaseAuth
             uiConfig={uiConfig}

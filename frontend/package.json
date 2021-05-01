@@ -69,7 +69,8 @@
     "@capacitor/cli": "2.4.7",
     "autoprefixer": "^10.2.5",
     "postcss": "^8.2.13",
-    "postcss-preset-env": "^6.7.0"
+    "postcss-preset-env": "^6.7.0",
+    "sass": "^1.32.12"
   },
   "description": "An Ionic project"
 }

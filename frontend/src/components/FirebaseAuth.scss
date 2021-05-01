@@ -1,8 +1,9 @@
 .signup-form {
   max-width: 1200px;
   text-align: center;
+  margin: auto;
+}
 
-  & h1 {
-    margin-bottom: 1rem;
-  }
+.signup-h1 {
+  margin: 40px;
 }
