@@ -1,14 +1,25 @@
 import path from 'path'
-import express from 'express'
-import compress from 'compression'
-import helmet from 'helmet'
-import hpp from 'hpp'
-import cors from 'cors'
-import rateLimit from 'express-rate-limit'
+import cookie from 'cookie'
 import pino from 'express-pino-logger'
+import express, { Express, Request, Response } from 'express'
+import helmet from 'helmet'
+import cors from 'cors'
+import hpp from 'hpp'
+import compress from 'compression'
+import rateLimit from 'express-rate-limit'
 
-export function middlewares(app: express.Application) {
-  let { NODE_ENV } = process.env
+const { NODE_ENV } = process.env
+const IS_PROD = NODE_ENV === 'production'
+const IS_DEV = NODE_ENV === 'development'
+
+function getCookie(req: Request, res: Response, next: any) {
+  if (req.headers.cookie) {
+    req.cookies = cookie.parse(req.headers.cookie)
+  }
+  next()
+}
+
+export function middlewares(app: Express) {
   // Set security headers
   app.use(helmet({}))
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }))
@@ -35,7 +46,7 @@ export function middlewares(app: express.Application) {
   app.use(cors())
   app.options('*', cors())
 
-  if (NODE_ENV === 'production') {
+  if (!IS_DEV) {
     // rate limit requests
     app.use(
       rateLimit({
@@ -46,14 +57,17 @@ export function middlewares(app: express.Application) {
   }
 
   // logger
-  app.use(
-    pino({
-      prettyPrint: {
-        levelFirst: true,
-        colorize: true,
-      },
-    })
-  )
+  let pinoConfig = {
+    prettyPrint: {
+      levelFirst: true,
+      colorize: true,
+    },
+  } as pino.Options
+
+  if (IS_PROD) {
+    pinoConfig = {}
+  }
+  app.use(pino(pinoConfig as pino.Options))
 
   // serve static files
   app.use(
@@ -62,4 +76,6 @@ export function middlewares(app: express.Application) {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
   )
+
+  app.use(getCookie)
 }
