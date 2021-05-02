@@ -1,0 +1,18 @@
+.new-post {
+  padding: 40px 0;
+
+  .post_title {
+    font-size: 1.625em;
+    font-weight: bolder;
+    margin-bottom: 20px;
+  }
+
+  .post_content {
+    margin-bottom: 20px;
+
+    ion-textarea,
+    textarea {
+      min-height: 30vh !important;
+    }
+  }
+}

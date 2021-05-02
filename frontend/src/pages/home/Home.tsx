@@ -9,13 +9,10 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react'
-import React, { useState } from 'react'
-import { User } from '@firebase/auth-types'
-import FirebaseAuth from '../components/FirebaseAuth'
+import FirebaseAuth from '../../components/FirebaseAuth'
+import Navbar from '../../components/Navbar'
 
-import './Home.css'
-import Navbar from '../components/Navbar'
-import useFirebase from '../hooks/useFirebase'
+import './Home.scss'
 
 const Home: React.FC = () => {
   return (

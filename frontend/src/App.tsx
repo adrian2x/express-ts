@@ -1,7 +1,7 @@
 import { Redirect, Route } from 'react-router-dom'
 import { IonApp, IonRouterOutlet } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
-import Home from './pages/Home'
+import Home from './pages/home/Home'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -21,8 +21,25 @@ import '@ionic/react/css/display.css'
 
 /* Theme variables */
 import './theme/variables.css'
-import Issues from './pages/Issues'
-import PostPage from './pages/Post'
+import Posts from './pages/posts/Posts'
+import PostPage from './pages/posts/post/Post'
+import NewPost from './pages/posts/post/NewPost'
+import { currentUser } from './lib/store'
+
+const AuthRoute = ({ path, to, exact, Component }: any) => {
+  return (
+    <Route
+      exact={exact}
+      path={path}
+      render={(props) => {
+        if (!currentUser) {
+          return <Redirect to={to} />
+        }
+        return <Component user={currentUser} />
+      }}
+    ></Route>
+  )
+}
 
 const App: React.FC = () => (
   <IonApp>
@@ -32,8 +49,9 @@ const App: React.FC = () => (
           <Home />
         </Route>
         <Route exact path="/posts">
-          <Issues />
+          <Posts />
         </Route>
+        <AuthRoute exact path="/posts/new" Component={NewPost} to="/" />
         <Route
           exact
           path="/post/:id"

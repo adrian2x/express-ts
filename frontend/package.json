@@ -20,6 +20,8 @@
     "date-fns": "^2.21.1",
     "firebase": "^8.4.3",
     "ionicons": "^5.4.0",
+    "js-cookie": "^2.2.1",
+    "pullstate": "^1.22.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-firebaseui": "^5.0.2",
@@ -43,6 +45,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
+    "dev": "npx ionic serve",
     "start": "react-scripts start",
     "build": "react-scripts build && cp -r ./build/. ../public/",
     "test": "react-scripts test",
@@ -68,6 +71,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "2.4.7",
+    "@types/js-cookie": "^2.2.6",
     "autoprefixer": "^10.2.5",
     "postcss": "^8.2.13",
     "postcss-preset-env": "^6.7.0",

@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import superagent from 'superagent'
 
+interface FetchOptions {
+  method?: string
+  headers?: any
+  query?: any
+  data?: any
+  type?: any
+  onProgress?: (event: superagent.ProgressEvent) => any
+}
+
 export default function useFetch<T>(
   url: string,
   options = {
@@ -10,20 +19,27 @@ export default function useFetch<T>(
     data: {},
     type: 'json',
     onProgress: (event: superagent.ProgressEvent) => {},
-  }
+  } as FetchOptions
 ) {
   const [loading, setLoading] = useState(true)
   const [response, setResponse] = useState<T | undefined>(undefined)
   const [error, setError] = useState<any>(undefined)
 
-  const { method, headers, query, data, type, onProgress } = options
+  const {
+    method = 'get',
+    type = 'json',
+    headers = {},
+    query = {},
+    data,
+    onProgress,
+  } = options
 
   useEffect(() => {
     async function fetchData() {
       try {
         // @ts-ignore
         let req = superagent[method](url)
-        req.on('progress', onProgress)
+        if (onProgress) req.on('progress', onProgress)
         req.type(type)
         req.set(headers)
         req.query(query)

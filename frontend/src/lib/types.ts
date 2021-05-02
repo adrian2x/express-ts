@@ -1,3 +1,6 @@
+import { User as FirebaseUser } from '@firebase/auth-types'
+
+export type AuthUser = FirebaseUser
 
 export interface Post {
   id: Number
@@ -5,8 +8,8 @@ export interface Post {
   updatedAt: Date
   title?: string
   content: string
-  author?: User
   authorId: number
+  author?: User
   replies?: Post[]
 }
 
@@ -15,9 +18,9 @@ export interface User {
   createdAt: Date
   updatedAt: Date
   name?: string // our model name
-  displayName?: string // firebase's displayName
+  displayName: string | null // firebase's displayName
   email: string
-  phoneNumber?: string
+  phoneNumber: string | null
   photoURL?: string
   role: string
   posts?: Post[]

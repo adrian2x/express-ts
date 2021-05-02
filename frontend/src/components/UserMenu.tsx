@@ -6,10 +6,10 @@ import {
   IonPopover,
 } from '@ionic/react'
 import React, { useState } from 'react'
-import { User } from '@firebase/auth-types'
-import { firebase } from './FirebaseAuth'
+import { signOut } from '../lib/firebase'
+import { AuthUser } from '../lib/types'
 
-export default function UserMenu({ user }: { user?: User | null }) {
+export default function UserMenu({ user }: { user?: AuthUser | null }) {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
     event: undefined,
@@ -36,12 +36,9 @@ export default function UserMenu({ user }: { user?: User | null }) {
               button
               onClick={(e) => {
                 setShowPopover({ showPopover: false, event: undefined })
-                firebase
-                  .auth()
-                  .signOut()
-                  .then(() => {
-                    window.location.assign('/')
-                  })
+                signOut().then(() => {
+                  window.location.assign('/')
+                })
               }}
             >
               Sign Out
@@ -56,15 +53,14 @@ export default function UserMenu({ user }: { user?: User | null }) {
             if (user) {
               e.persist()
               setShowPopover({ showPopover: true, event: e })
+            } else {
+              window.location.assign('/')
             }
           }}
         >
           <img
             alt="Account"
-            src={
-              user?.photoURL ??
-              'https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y'
-            }
+            src={user?.photoURL ?? 'https://gravatar.com/avatar/?d=mp'}
           />
         </IonAvatar>
       </IonItem>

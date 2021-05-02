@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 import { User } from '@firebase/auth-types'
-import { signIn } from '../api'
+import firebase from '../lib/firebase'
+import { signIn } from '../lib/api'
+import { currentUser, store } from '../lib/store'
+
 import './FirebaseAuth.scss'
-
-// TODO: set your firebase config
-const config = {
-  apiKey: 'AIzaSyDOTyoj9m1nnT9bkG30WXMPuzFjT39Yb9I',
-  authDomain: 'test-e758d.firebaseapp.com',
-  databaseURL: 'https://test-e758d.firebaseio.com',
-  storageBucket: 'test-e758d.appspot.com',
-  messagingSenderId: '918779841724',
-}
-firebase.initializeApp(config)
-
-export { firebase }
 
 // Configure FirebaseUI.
 const uiConfig = {
@@ -73,23 +62,7 @@ export interface FirebaseAuthProps {
 }
 
 export default function FirebaseAuth({ signedInSuccess }: FirebaseAuthProps) {
-  const [user, setUser] = useState<User | undefined>(undefined)
-
-  // Listen to the Firebase Auth state and set the local state.
-  useEffect(() => {
-    const unregisterAuthObserver = firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        if (user) {
-          setUser(user)
-          if (signedInSuccess) signedInSuccess(user)
-        }
-      })
-    // Make sure we un-register Firebase observers when the component unmounts.
-    return () => unregisterAuthObserver()
-  }, [])
-
-  if (!user) {
+  if (!currentUser) {
     return (
       <div className="signup-form">
         <h1 className="signup-h1">Please sign in to continue</h1>
