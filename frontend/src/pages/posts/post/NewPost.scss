@@ -12,7 +12,11 @@
 
     ion-textarea,
     textarea {
-      min-height: 30vh !important;
+      min-height: 33vh !important;
+    }
+
+    textarea {
+      border-bottom: 2px solid var(--ion-color-light-shade);
     }
   }
 }

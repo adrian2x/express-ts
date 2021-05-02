@@ -12,6 +12,7 @@ interface FetchOptions {
 
 export default function useFetch<T>(
   url: string,
+  deps: any[] = [],
   options = {
     method: 'get',
     headers: {},
@@ -55,6 +56,6 @@ export default function useFetch<T>(
       }
     }
     fetchData()
-  }, [])
+  }, deps)
   return { loading, response, error }
 }

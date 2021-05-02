@@ -62,7 +62,8 @@ export interface FirebaseAuthProps {
 }
 
 export default function FirebaseAuth({ signedInSuccess }: FirebaseAuthProps) {
-  if (!currentUser) {
+  const user = store.useState((s) => s.user)
+  if (!user && !currentUser) {
     return (
       <div className="signup-form">
         <h1 className="signup-h1">Please sign in to continue</h1>

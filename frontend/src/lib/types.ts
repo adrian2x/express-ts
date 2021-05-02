@@ -18,7 +18,8 @@ export interface User {
   createdAt: Date
   updatedAt: Date
   name?: string // our model name
-  displayName: string | null // firebase's displayName
+  providerId?: string // firebase.uid
+  displayName: string | null // firebase.displayName
   email: string
   phoneNumber: string | null
   photoURL?: string

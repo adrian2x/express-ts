@@ -4,8 +4,9 @@ import {
   IonList,
   IonListHeader,
   IonPopover,
+  NavContext,
 } from '@ionic/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { signOut } from '../lib/firebase'
 import { AuthUser } from '../lib/types'
 
@@ -14,6 +15,8 @@ export default function UserMenu({ user }: { user?: AuthUser | null }) {
     showPopover: false,
     event: undefined,
   })
+
+  const { navigate } = useContext(NavContext)
 
   return (
     <>
@@ -54,7 +57,7 @@ export default function UserMenu({ user }: { user?: AuthUser | null }) {
               e.persist()
               setShowPopover({ showPopover: true, event: e })
             } else {
-              window.location.assign('/')
+              navigate('/')
             }
           }}
         >

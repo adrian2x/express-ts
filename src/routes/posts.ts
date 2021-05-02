@@ -8,12 +8,8 @@ const router = Router()
 /** Creates a new post */
 router.put('/posts', withAuth, async (req, res) => {
   let { post } = req.body
-
-  if (!post.authorId) {
-    return res
-      .status(400)
-      .send({ ok: false, message: 'Missing post.authorId field' })
-  }
+  let currentUser = await req.getUser()
+  post.authorId = currentUser.id
 
   if (post) {
     let created = await prisma.post.create({
@@ -27,36 +23,40 @@ router.put('/posts', withAuth, async (req, res) => {
 })
 
 async function cursorPagination(req, getResults) {
-  let page = { size: 100 }
-  if (req.query.page) {
-    page = req.query.page
-  }
-
+  let { page = { size: 100 }, sort = ['createdAt'] } = req.query
   const { before, after, size } = page
+  if (!Array.isArray(sort)) sort = [sort]
 
   let query = {
     take: Number(size),
     skip: after ? 1 : 0,
-    cursor: undefined,
-    orderBy: {
-      id: 'asc',
-    },
+    orderBy: sort.map((field: string) => {
+      let desc = field.startsWith('-')
+      if (desc) field = field.substr(1)
+      return { [field]: desc ? 'desc' : 'asc' }
+    }),
   }
-  if (before || after) {
+
+  if (after) {
     query.cursor = {
       id: Number(after),
     }
   }
-  let data = await getResults(query)
 
-  let last = data[data.length - 1]
-  let nextCursor = last?.id
+  let nextCursor
+  let data = await getResults(query)
+  if (data && data.length) {
+    let last = data[data.length - 1]
+    nextCursor = last?.id
+  }
   return {
     links: {
-      next: `/api/v1/posts/?page[after]=${nextCursor}&page[size]=${size}`,
+      next:
+        nextCursor &&
+        `/api/v1/posts/?page[after]=${nextCursor}&page[size]=${size}`,
       prev: `/api/v1/posts/?page[before]=${nextCursor}&page[size]=${size}`,
     },
-    data: data,
+    data,
   }
 }
 
@@ -87,20 +87,30 @@ router.get('/posts/:id?', async (req, res) => {
 
 /** Update post data */
 router.post('/posts/:id', withAuth, async (req, res) => {
-  let { id } = req.params
-  let { post } = req.body
+  try {
+    let {
+      params: { id },
+      body: { post },
+    } = req
 
-  if (id && post) {
-    let updatedPost = await prisma.post.update({
-      where: { id: Number(id) },
-      data: post,
-    })
-    return res.send(updatedPost)
+    let currentUser = await req.getUser()
+    // Make sure user is owner of the post
+    if (currentUser?.id !== post.authorId) {
+      return res.status(401).send({ error: 'Unauthorized to edit this post!' })
+    }
+
+    if (post && id) {
+      let updatedPost = await prisma.post.update({
+        where: { id: Number(id) },
+        data: post,
+      })
+      return res.send(updatedPost)
+    }
+
+    return res.status(400).send({ error: 'Missing id or body post fields' })
+  } catch (error) {
+    return res.status(500).send({ error })
   }
-
-  return res
-    .status(400)
-    .send({ ok: false, message: 'Missing id or post fields' })
 })
 
 /** Delete a post */

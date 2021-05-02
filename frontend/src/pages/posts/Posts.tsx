@@ -31,6 +31,7 @@ type GetPostsResponse = {
 export default function Posts() {
   const { loading, response, error } = useFetch<GetPostsResponse>(
     GET_POSTS_URL,
+    [],
     {
       query: { sort: '-createdAt' },
     }

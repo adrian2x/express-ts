@@ -21,6 +21,6 @@ export function getUser(id: number | string) {
 
 export async function createPost(post: Post, user: AuthUser) {
   return superagent.put(GET_POSTS_URL)
-    .set('Authorization', await user.getIdToken())
+    .set('Authorization', user.uid)
     .send({ post }).then()
 }

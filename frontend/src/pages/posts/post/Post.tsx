@@ -13,22 +13,32 @@ import {
   IonToolbar,
   IonTitle,
   IonSkeletonText,
+  IonButtons,
+  IonButton,
+  IonRouterLink,
+  NavContext,
 } from '@ionic/react'
+import { useContext } from 'react'
 import Navbar from '../../../components/Navbar'
 import { Post } from '../../../lib/types'
 import { GET_POSTS_URL } from '../../../lib/api'
 import useFetch from '../../../hooks/useFetch'
 
 import './Post.scss'
+import { store } from '../../../lib/store'
 
 interface PostPageProps
   extends RouteComponentProps<{
     id: string
   }> {}
 
-export default function PostPage({ match, history }: PostPageProps) {
+export default function PostPage({
+  match: { params },
+  history,
+}: PostPageProps) {
   const { loading, response, error } = useFetch<Post>(
-    `${GET_POSTS_URL}/${match.params.id}`
+    `${GET_POSTS_URL}/${params.id}`,
+    [params]
   )
 
   return (
@@ -77,18 +87,20 @@ function EmptyState() {
 
 export function PostContent({ post }: { post: Post }) {
   const { author } = post
+  const user = store.useState((s) => s.user)
+  const { navigate } = useContext(NavContext)
   return (
     <div className="container single-post">
       <h1 className="post-title">{post.title}</h1>
       <section className="meta-author">
-        <IonItem
-          slot="start"
-          routerLink={`/users/${author?.id}`}
-          lines="none"
-          className="ion-no-padding no-hover"
-        >
+        <IonItem lines="none" className="ion-no-padding no-hover">
           {author && (
-            <IonAvatar slot="start">
+            <IonAvatar
+              slot="start"
+              onClick={(e) => {
+                navigate(`/users/${author?.id}`)
+              }}
+            >
               <img src={author.photoURL!} alt={author.name} />
             </IonAvatar>
           )}
@@ -96,6 +108,28 @@ export function PostContent({ post }: { post: Post }) {
             <h2>{author?.name}</h2>
             <h3>{format(new Date(post.createdAt), 'PPP')}</h3>
           </IonLabel>
+          {user && author?.providerId === user.uid && (
+            <IonButtons slot="end">
+              <IonButton
+                color="primary"
+                fill="solid"
+                routerLink={`/posts/${post.id}/update`}
+              >
+                Edit
+              </IonButton>
+              <IonButton
+                color="danger"
+                fill="outline"
+                type="button"
+                onClick={(e) => {
+                  // TODO: delete request
+                  navigate('/posts/')
+                }}
+              >
+                Delete
+              </IonButton>
+            </IonButtons>
+          )}
         </IonItem>
       </section>
       <section>
