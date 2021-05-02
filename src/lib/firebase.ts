@@ -1,6 +1,8 @@
 import * as admin from 'firebase-admin'
 import { PrismaClient } from '@prisma/client'
 
+const { NODE_ENV } = process.env
+const IS_PROD = NODE_ENV === 'production'
 const prisma = new PrismaClient()
 
 const firebase = admin.initializeApp({
@@ -11,13 +13,15 @@ export async function firebaseAuth(req, res, next) {
   req.firebase = firebase
   let authToken
   const { headers, cookies } = req
-  if (headers.authorization) {
-    authToken = headers.authorization
-  } else if (cookies.session) {
+  if (cookies.session) {
     authToken = cookies.session
+  } else if (headers.authorization) {
+    authToken = headers.authorization
   }
-  if (authToken) {
+  if (IS_PROD) {
     req.auth = await admin.auth().verifyIdToken(authToken)
+  } else {
+    req.auth = { uid: authToken }
   }
   next()
 }
@@ -39,6 +43,9 @@ export async function withAuth(req, res, next) {
       })
       return req.user
     }
+
+    req.deny = async (code = 401, data = 'Unauthorized') =>
+      res.status(code).send(data)
 
     return next()
   } catch (err) {

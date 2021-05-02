@@ -14,6 +14,7 @@ const IS_PROD = NODE_ENV === 'production'
 const IS_DEV = NODE_ENV === 'development'
 
 function getCookies(req: Request, res: Response, next: any) {
+  req.cookies = {}
   if (req.headers.cookie) {
     req.cookies = cookie.parse(req.headers.cookie)
   }
