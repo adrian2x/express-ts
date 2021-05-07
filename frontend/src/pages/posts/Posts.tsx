@@ -23,6 +23,7 @@ import { Post } from '../../lib/types'
 import Navbar from '../../components/Navbar'
 
 import './Posts.scss'
+import { md2html } from '../../lib/md2html'
 
 type GetPostsResponse = {
   data?: Post[]
@@ -33,7 +34,7 @@ export default function Posts() {
     GET_POSTS_URL,
     [],
     {
-      query: { sort: '-createdAt' },
+      query: { sort: '-updatedAt' },
     }
   )
 
@@ -99,7 +100,7 @@ export function PostList({ posts }: { posts: Post[] }) {
             <h2 className="post_title">{x.title}</h2>
             <p
               className="post_content"
-              dangerouslySetInnerHTML={{ __html: x.content }}
+              dangerouslySetInnerHTML={{ __html: md2html(x.content) }}
             ></p>
             <p>
               {x.author?.name} on {format(new Date(x.createdAt), 'PPP')}

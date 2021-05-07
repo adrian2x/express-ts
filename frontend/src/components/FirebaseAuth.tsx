@@ -1,6 +1,6 @@
+import { User } from '@firebase/auth-types'
 import React, { useEffect } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import { User } from '@firebase/auth-types'
 import firebase from '../lib/firebase'
 import { signIn } from '../lib/api'
 import { currentUser, store } from '../lib/store'
@@ -57,11 +57,7 @@ const uiConfig = {
   },
 }
 
-export interface FirebaseAuthProps {
-  signedInSuccess?: (user: User) => void
-}
-
-export default function FirebaseAuth({ signedInSuccess }: FirebaseAuthProps) {
+export default function FirebaseAuth() {
   const user = store.useState((s) => s.user)
   if (!user && !currentUser) {
     return (

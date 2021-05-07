@@ -25,8 +25,9 @@ import Posts from './pages/posts/Posts'
 import PostPage from './pages/posts/post/Post'
 import NewPost from './pages/posts/post/NewPost'
 import { currentUser } from './lib/store'
+import EditPost from './pages/posts/post/EditPost'
 
-const AuthRoute = ({ path, to, exact, Component }: any) => {
+const AuthRoute = ({ path, to, exact, Component, ...props }: any) => {
   return (
     <Route
       exact={exact}
@@ -35,7 +36,7 @@ const AuthRoute = ({ path, to, exact, Component }: any) => {
         if (!currentUser) {
           return <Redirect to={to} />
         }
-        return <Component user={currentUser} />
+        return <Component user={currentUser} {...props} />
       }}
     ></Route>
   )
@@ -52,6 +53,7 @@ const App: React.FC = () => (
           <Posts />
         </Route>
         <AuthRoute exact path="/posts/new" Component={NewPost} to="/" />
+        <AuthRoute exact path="/posts/:id/update" Component={EditPost} to="/" />
         <Route
           exact
           path="/post/:id"

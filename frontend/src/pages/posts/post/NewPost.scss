@@ -18,5 +18,19 @@
     textarea {
       border-bottom: 2px solid var(--ion-color-light-shade);
     }
+
+    &.content_only {
+      margin-bottom: 8px;
+      ion-textarea,
+      textarea {
+        min-height: 60px !important;
+        border-bottom-color: transparent;
+      }
+
+      textarea {
+        border: 2px solid var(--ion-color-light-shade);
+        border-radius: 4px;
+      }
+    }
   }
 }

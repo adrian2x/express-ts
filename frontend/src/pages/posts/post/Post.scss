@@ -9,4 +9,42 @@
   .meta-author {
     margin: 1em 0;
   }
+
+  .post_reply_author {
+    width: 24px;
+    height: 24px;
+  }
+
+  .post_reply .new-post {
+    padding-bottom: 10px;
+  }
+
+  .post_comments {
+    .post_content {
+      .post_meta_actions {
+        opacity: 0;
+      }
+
+      &:hover .post_meta_actions {
+        opacity: 1;
+      }
+    }
+
+    textarea {
+      border: 2px solid var(--ion-color-light-shade);
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .post_save {
+      margin: 1em 0;
+    }
+
+    .post-content {
+      font-size: 0.9em;
+      margin-top: -16px;
+      margin-left: 40px;
+      margin-right: 1rem;
+    }
+  }
 }
