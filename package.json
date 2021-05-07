@@ -48,6 +48,8 @@
     "@types/express-pino-logger": "^4.0.2",
     "@types/express-rate-limit": "^5.1.1",
     "@types/hpp": "^0.2.1",
+    "@types/marked": "^2.0.2",
+    "@types/sanitize-html": "^2.3.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "autocannon": "^7.2.0",

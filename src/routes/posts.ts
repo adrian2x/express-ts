@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Post } from '@prisma/client'
 import { withAuth } from '../lib/firebase'
 
 const prisma = new PrismaClient()
@@ -14,6 +14,9 @@ router.put('/posts', withAuth, async (req, res) => {
   if (post) {
     let created = await prisma.post.create({
       data: post,
+      include: {
+        author: true,
+      },
     })
 
     return res.send(created)
@@ -69,6 +72,14 @@ router.get('/posts/:id?', async (req, res) => {
       where: { id: Number(id) },
       include: {
         author: true,
+        replies: {
+          orderBy: {
+            updatedAt: 'desc',
+          },
+          include: {
+            author: true,
+          },
+        },
       },
     })
     res.send(post)
@@ -99,10 +110,15 @@ router.post('/posts/:id', withAuth, async (req, res) => {
       return res.status(401).send({ error: 'Unauthorized to edit this post!' })
     }
 
+    let updatePost = {
+      title: post.title,
+      content: post.content,
+    }
+
     if (post && id) {
       let updatedPost = await prisma.post.update({
         where: { id: Number(id) },
-        data: post,
+        data: updatePost,
       })
       return res.send(updatedPost)
     }
@@ -111,6 +127,48 @@ router.post('/posts/:id', withAuth, async (req, res) => {
   } catch (error) {
     return res.status(500).send({ error })
   }
+})
+
+/** Creates a post reply */
+router.post('/reply/:id', withAuth, async (req, res) => {
+  let {
+    params: { id },
+    body: { post },
+  } = req
+
+  let currentUser = await req.getUser()
+  post.authorId = currentUser.id
+
+  if (post) {
+    let updated = await prisma.post.update({
+      where: { id: Number(id) },
+      data: {
+        replies: {
+          // Add this post if it doesn't exist as a reply
+          connectOrCreate: {
+            where: {
+              id: -1,
+            },
+            create: post,
+          },
+        },
+      },
+      include: {
+        replies: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          include: {
+            author: true,
+          },
+        },
+      },
+    })
+
+    return res.send(updated)
+  }
+
+  return res.status(400).send({ ok: false, message: 'Missing post field' })
 })
 
 /** Delete a post */
