@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import firebase from '../lib/firebase'
 import { signIn } from '../lib/api'
-import { currentUser, store } from '../lib/store'
+import { store } from '../lib/store'
 
 import './FirebaseAuth.scss'
 
@@ -59,7 +59,7 @@ const uiConfig = {
 
 export default function FirebaseAuth() {
   const user = store.useState((s) => s.user)
-  if (!user && !currentUser) {
+  if (!user) {
     return (
       <div className="signup-form">
         <h1 className="signup-h1">Please sign in to continue</h1>

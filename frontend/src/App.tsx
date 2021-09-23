@@ -24,10 +24,11 @@ import './theme/variables.css'
 import Posts from './pages/posts/Posts'
 import PostPage from './pages/posts/post/Post'
 import NewPost from './pages/posts/post/NewPost'
-import { currentUser } from './lib/store'
 import EditPost from './pages/posts/post/EditPost'
+import { store } from './lib/store'
 
 const AuthRoute = ({ path, to, exact, Component, ...props }: any) => {
+  const currentUser = store.useState((s) => s.user)
   return (
     <Route
       exact={exact}

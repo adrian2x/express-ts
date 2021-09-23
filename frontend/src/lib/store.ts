@@ -5,22 +5,22 @@ interface StoreType {
   user: firebase.User | null
 }
 
-let currentUser = sessionStorage.getItem('user')
-if (currentUser) currentUser = JSON.parse(currentUser)
-export { currentUser }
+export const currentUser = () => {
+  try {
+    let user = firebase.auth().currentUser
+    if (user) return user
+    return JSON.parse(sessionStorage.getItem('user') as string) as firebase.User
+  } catch (err) {
+    return null
+  }
+}
 
 export const store = new Store<StoreType>({
-  user: firebase.auth().currentUser
+  user: currentUser()
 })
 
-firebase.auth().onAuthStateChanged(async (user) => {
-  if (user) {
-    store.update(s => {
-      s.user = user
-    })
-  } else {
-    store.update(s => {
-      s.user = null
-    })
-  }
+firebase.auth().onAuthStateChanged(user => {
+  store.update(s => {
+    s.user = user
+  })
 })
