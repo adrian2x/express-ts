@@ -18,6 +18,13 @@ This project is a starting point for creating an express application using types
 - eslint
 - prettier
 
+## Get Started
+
+- make a `.env` file with variables (eg. PORT=3000)
+- update the prisma schema to connect to the database
+- npm run migrate (needs a DATABASE_URL setting in .env)
+- npm run dbseed
+
 Copyright © 2020 Adrian Cruz
 
 This program is free software: you can redistribute it and/or modify
